@@ -1,5 +1,4 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
+# Azure DevOps Pipeline for Building and Deploying a Spring Boot Application
 
 name: Build and deploy JAR app to Azure Web App - sjbit-demo-app-service
 
@@ -16,7 +15,8 @@ jobs:
       contents: read # Required for actions/checkout
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
       - name: Set up Java version
         uses: actions/setup-java@v4
@@ -25,14 +25,14 @@ jobs:
           distribution: 'microsoft'
 
       - name: Build with Maven
-        run: mvn clean install
-        working-directory: demo  # Ensures the build runs in the correct directory
+        run: mvn clean package
+        working-directory: demo  # Ensures Maven runs inside the 'demo' directory
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: 'demo/target/*.jar'  # Ensure correct path
+          path: demo/target/sjbit-demo-app.jar  # Uploads the specific JAR file
 
   deploy:
     runs-on: ubuntu-latest
@@ -49,6 +49,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: java-app
+          path: .
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -63,4 +64,4 @@ jobs:
         with:
           app-name: 'sjbit-demo-app-service'
           slot-name: 'Production'
-          package: 'java-app/*.jar'  # Ensure correct artifact reference
+          package: 'sjbit-demo-app.jar'  # Deploying the specific JAR file
