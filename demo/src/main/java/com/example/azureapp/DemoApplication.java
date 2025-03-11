@@ -1,4 +1,4 @@
-package com.example.azureapp.controller;
+package com.example.azureapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
